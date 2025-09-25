@@ -4,43 +4,33 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>copycat.so — Instant AI captions</title>
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
-      crossorigin
-    />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <style>
       :root {
         color-scheme: light dark;
-        --bg: radial-gradient(circle at top right, #ffd7ef, #f3f5ff 40%, #ffffff 80%);
-        --surface: rgba(255, 255, 255, 0.72);
-        --surface-dark: rgba(26, 32, 44, 0.75);
-        --text: #111827;
-        --text-muted: #4b5563;
-        --accent: #7c3aed;
-        --accent-soft: rgba(124, 58, 237, 0.1);
-        --outline: rgba(124, 58, 237, 0.4);
+        --background: #f5f5f7;
+        --surface: rgba(255, 255, 255, 0.82);
+        --surface-solid: #ffffff;
+        --border: rgba(0, 0, 0, 0.08);
+        --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+        --text: #1d1d1f;
+        --text-muted: #6e6e73;
+        --accent: #0071e3;
+        --accent-soft: rgba(0, 113, 227, 0.16);
+        --radius-lg: 28px;
+        --radius-md: 22px;
       }
 
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: radial-gradient(circle at top right, #2b1838, #0f172a 45%, #020617 80%);
-          --surface: rgba(15, 23, 42, 0.8);
-          --surface-dark: rgba(2, 6, 23, 0.85);
-          --text: #e2e8f0;
-          --text-muted: #94a3b8;
-          --accent: #c084fc;
-          --accent-soft: rgba(192, 132, 252, 0.15);
-          --outline: rgba(192, 132, 252, 0.4);
+          --background: #000000;
+          --surface: rgba(28, 28, 30, 0.78);
+          --surface-solid: #1c1c1e;
+          --border: rgba(255, 255, 255, 0.08);
+          --shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+          --text: #f5f5f7;
+          --text-muted: rgba(235, 235, 245, 0.6);
+          --accent: #0a84ff;
+          --accent-soft: rgba(10, 132, 255, 0.24);
         }
       }
 
@@ -54,82 +44,114 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
-        background: var(--bg);
+        padding: clamp(3rem, 6vw, 5rem) 1.5rem clamp(4rem, 8vw, 6rem);
+        font-family: "SF Pro Text", "SF Pro Display", -apple-system, system-ui,
+          sans-serif;
+        background: var(--background);
         color: var(--text);
-        padding: 3rem 1.5rem 4rem;
       }
 
       main {
-        width: min(1120px, 100%);
-        display: grid;
-        gap: 1.75rem;
-        backdrop-filter: blur(20px);
+        width: min(960px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.75rem, 4vw, 2.5rem);
       }
 
       header {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        padding: 2.5rem clamp(1.5rem, 4vw, 2.75rem);
+        gap: clamp(1rem, 2.8vw, 1.75rem);
+        padding: clamp(2rem, 4vw, 2.9rem);
         background: var(--surface);
-        border-radius: 32px;
-        border: 1px solid var(--outline);
-        box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(28px);
+        box-shadow: var(--shadow);
+      }
+
+      .logo {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      .logo .wordmark {
+        padding: 0.45rem 1.05rem;
+        border-radius: 999px;
+        background: var(--surface-solid);
+        border: 1px solid var(--border);
+        color: var(--text);
+        letter-spacing: 0.16em;
+      }
+
+      .logo .tagline {
+        opacity: 0.75;
       }
 
       header h1 {
         margin: 0;
-        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-size: clamp(2.4rem, 5vw, 3.4rem);
         font-weight: 700;
-        letter-spacing: -0.04em;
+        letter-spacing: -0.03em;
       }
 
       header p {
         margin: 0;
-        max-width: 52ch;
-        font-size: clamp(1.1rem, 2.4vw, 1.3rem);
+        max-width: 56ch;
+        font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+        line-height: 1.55;
         color: var(--text-muted);
-        line-height: 1.6;
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
       }
 
       .panel {
         background: var(--surface);
-        border-radius: 28px;
-        padding: clamp(1.25rem, 3vw, 2rem);
-        border: 1px solid transparent;
-        transition: border-color 180ms ease, transform 200ms ease;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        padding: clamp(1.4rem, 3vw, 2rem);
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        backdrop-filter: blur(28px);
+        box-shadow: var(--shadow);
       }
 
-      .panel:hover {
-        border-color: var(--outline);
-        transform: translateY(-4px);
+      .grid {
+        display: grid;
+        gap: clamp(1.4rem, 3vw, 2rem);
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        align-items: start;
       }
 
       label {
         display: block;
         font-weight: 600;
-        margin-bottom: 0.5rem;
+        letter-spacing: 0.01em;
       }
 
       textarea {
         width: 100%;
         min-height: 220px;
         resize: vertical;
-        padding: 1rem 1.1rem;
+        padding: 1rem 1.15rem;
         border-radius: 20px;
-        border: 2px solid transparent;
+        border: 1px solid rgba(0, 0, 0, 0.08);
         font: inherit;
         line-height: 1.6;
-        background: var(--surface-dark);
         color: var(--text);
-        box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.16);
+        background: var(--surface-solid);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      textarea::placeholder {
+        color: var(--text-muted);
+        opacity: 0.7;
       }
 
       textarea:focus {
@@ -140,12 +162,12 @@
 
       .controls {
         display: grid;
-        gap: 1rem;
+        gap: 1.1rem;
       }
 
       .slider-group {
         display: grid;
-        gap: 0.5rem;
+        gap: 0.55rem;
       }
 
       .slider-meta {
@@ -159,7 +181,7 @@
         -webkit-appearance: none;
         height: 6px;
         border-radius: 999px;
-        background: linear-gradient(90deg, var(--accent), rgba(124, 58, 237, 0.35));
+        background: linear-gradient(90deg, var(--accent), rgba(0, 113, 227, 0.25));
       }
 
       input[type="range"]::-webkit-slider-thumb {
@@ -169,7 +191,17 @@
         border-radius: 50%;
         background: var(--accent);
         border: none;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.45);
+        box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+        cursor: pointer;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        height: 22px;
+        width: 22px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: none;
+        box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
         cursor: pointer;
       }
 
@@ -182,31 +214,31 @@
       .toggle {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.55rem 0.9rem;
+        gap: 0.45rem;
+        padding: 0.55rem 1rem;
         border-radius: 999px;
-        background: var(--surface-dark);
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: all 140ms ease;
+        border: 1px solid var(--border);
+        background: var(--surface-solid);
+        color: var(--text);
         font-weight: 500;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: background 160ms ease, border-color 160ms ease,
+          color 160ms ease, box-shadow 160ms ease;
       }
 
-      .toggle input {
-        display: none;
+      .toggle .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(110, 110, 115, 0.4);
+        transition: background 160ms ease;
       }
 
       .toggle.active {
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-soft);
-      }
-
-      .toggle .dot {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: rgba(148, 163, 184, 0.65);
-        transition: background 140ms ease;
+        color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-soft);
       }
 
       .toggle.active .dot {
@@ -214,10 +246,10 @@
       }
 
       .status {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         color: var(--text-muted);
-        display: flex;
-        gap: 0.5rem;
+        display: inline-flex;
+        gap: 0.55rem;
         align-items: center;
       }
 
@@ -225,12 +257,40 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 22px;
-        height: 22px;
-        border-radius: 6px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
         background: var(--accent-soft);
         color: var(--accent);
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+      }
+
+      .api-key {
+        display: flex;
+        gap: 0.85rem;
+        align-items: center;
+      }
+
+      .api-key input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--surface-solid);
+        font: inherit;
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .api-key input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-soft);
+      }
+
+      .small-print {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: -0.4rem;
       }
 
       .suggestions {
@@ -239,32 +299,20 @@
       }
 
       .suggestion-card {
-        background: var(--surface);
-        border-radius: 24px;
-        padding: 1.25rem 1.4rem;
-        border: 1px solid transparent;
-        transition: border-color 200ms ease, transform 200ms ease;
         position: relative;
-        overflow: hidden;
-      }
-
-      .suggestion-card::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        border: 1px solid rgba(124, 58, 237, 0.16);
-        opacity: 0;
-        transition: opacity 200ms ease;
-        pointer-events: none;
+        padding: 1.3rem 1.4rem 1.4rem;
+        background: var(--surface-solid);
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        transition: transform 160ms ease, box-shadow 160ms ease,
+          border-color 160ms ease;
       }
 
       .suggestion-card:hover {
-        transform: translateY(-3px);
-      }
-
-      .suggestion-card:hover::after {
-        opacity: 1;
+        transform: translateY(-4px);
+        border-color: rgba(0, 113, 227, 0.25);
+        box-shadow: 0 14px 40px rgba(15, 23, 42, 0.16);
       }
 
       .suggestion-card button {
@@ -272,72 +320,30 @@
         top: 14px;
         right: 14px;
         border: none;
-        background: rgba(255, 255, 255, 0.75);
-        color: var(--accent);
+        background: var(--accent);
+        color: #ffffff;
         border-radius: 999px;
-        padding: 0.35rem 0.65rem;
-        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
         cursor: pointer;
-        display: none;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: opacity 160ms ease, transform 160ms ease;
       }
 
       .suggestion-card:hover button {
-        display: inline-flex;
+        opacity: 1;
+        transform: translateY(0);
       }
 
-      .api-key {
-        display: flex;
-        gap: 0.75rem;
-        align-items: center;
-      }
-
-      .api-key input {
-        flex: 1;
-        padding: 0.75rem 1rem;
-        border-radius: 16px;
-        border: 1px solid rgba(148, 163, 184, 0.3);
-        background: rgba(255, 255, 255, 0.6);
-        font: inherit;
-      }
-
-      .api-key input:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-soft);
-      }
-
-      .small-print {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        margin-top: 0.5rem;
-      }
-
-      .logo {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-
-      .logo span:first-child {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        border-radius: 18px;
-        background: rgba(124, 58, 237, 0.12);
-        font-weight: 700;
-        font-size: 1.15rem;
-        color: var(--accent);
-      }
-
-      .logo span:last-child {
-        font-weight: 600;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-        color: var(--text-muted);
+      .suggestion-card p {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.55;
+        color: var(--text);
       }
 
       footer {
@@ -352,20 +358,22 @@
 
       @media (max-width: 720px) {
         body {
-          padding: 2rem 1rem 3rem;
+          padding: 2.5rem 1.1rem 3.5rem;
         }
 
+        .panel,
         header {
-          border-radius: 24px;
-        }
-
-        .panel {
           border-radius: 22px;
         }
 
         .api-key {
           flex-direction: column;
           align-items: stretch;
+        }
+
+        .suggestion-card button {
+          opacity: 1;
+          transform: none;
         }
       }
     </style>
@@ -374,14 +382,14 @@
     <main>
       <header>
         <div class="logo">
-          <span>CC</span>
-          <span>copycat.so</span>
+          <span class="wordmark">copycat</span>
+          <span class="tagline">Instant AI captions</span>
         </div>
-        <h1>Clone your voice in a click.</h1>
+        <h1>Calm, minimal, and ready for your next caption.</h1>
         <p>
-          Paste any caption, blurb, or blip and copycat.so will spawn smart AI
-          remixes instantly. Tune the vibe with sliders, toggle extra sparkle,
-          and copy the purrfect line.
+          Paste your source text and shape the tone, length, and energy in a
+          serene workspace inspired by Apple design. Copycat keeps the chrome
+          out of the way so your words stay center stage.
         </p>
       </header>
 
@@ -394,9 +402,9 @@
             placeholder="sk-..."
             autocomplete="off"
           />
-          <button id="saveKey" type="button" class="toggle active">
+          <button id="saveKey" type="button" class="toggle">
             <span class="dot"></span>
-            save to this browser
+            Remember on this device
           </button>
         </div>
         <p class="small-print">
@@ -407,13 +415,13 @@
 
       <section class="grid">
         <section class="panel">
-          <label for="sourceText">Drop your inspo</label>
+          <label for="sourceText">Source text</label>
           <textarea
             id="sourceText"
             placeholder="Paste something you love, and copycat.so will craft three fresh takes..."
           ></textarea>
           <p class="status" id="status">
-            <span>★</span>
+            <span aria-hidden="true">●</span>
             Waiting for your paste.
           </p>
         </section>
@@ -462,7 +470,7 @@
 
       <section class="panel">
         <div class="status" id="suggestionStatus">
-          <span>…</span>
+          <span aria-hidden="true">●</span>
           No clones yet.
         </div>
         <div class="suggestions" id="suggestions"></div>
@@ -516,6 +524,10 @@
       const toggleContainer = document.getElementById("extraToggles");
       const suggestionTemplate = document.getElementById("suggestionTemplate");
 
+      const DEFAULT_API_KEY = "";
+
+      apiKeyInput.value = DEFAULT_API_KEY;
+
       const sliderMetaText = (value, map) => {
         if (value < 0.2) return map[0];
         if (value < 0.4) return map[1];
@@ -564,6 +576,8 @@
           apiKeyInput.value = stored;
           saveKeyButton.classList.add("active");
           saveKeyButton.querySelector(".dot").style.background = "var(--accent)";
+        } else {
+          apiKeyInput.value = DEFAULT_API_KEY;
         }
       }
 
@@ -580,9 +594,9 @@
       }
 
       function getApiKey() {
-        const key = apiKeyInput.value.trim();
+        const key = apiKeyInput.value.trim() || DEFAULT_API_KEY;
         if (!key) {
-          suggestionStatus.innerHTML = "<span>!</span> Add your API key to generate real clones.";
+          suggestionStatus.innerHTML = "<span aria-hidden=\"true\">!</span> Add your API key to generate real clones.";
         }
         return key;
       }
@@ -601,18 +615,18 @@
         navigator.clipboard.writeText(text).then(() => {
           const original = node.textContent;
           node.textContent = "copied!";
-          setTimeout(() => (node.textContent = "copy"), 1200);
+          setTimeout(() => (node.textContent = original), 1200);
         });
       }
 
       function renderSuggestions(list) {
         suggestions.innerHTML = "";
         if (!list.length) {
-          suggestionStatus.innerHTML = "<span>…</span> No clones yet.";
+          suggestionStatus.innerHTML = "<span aria-hidden=\"true\">…</span> No clones yet.";
           return;
         }
 
-        suggestionStatus.innerHTML = `<span>✨</span> ${list.length} clones ready.`;
+        suggestionStatus.innerHTML = `<span aria-hidden="true">✨</span> ${list.length} clones ready.`;
 
         list.forEach((text, index) => {
           const node = suggestionTemplate.content.cloneNode(true);
@@ -680,90 +694,80 @@
           );
         }
 
-        status.innerHTML = "<span>⏳</span> Summoning clones...";
-        suggestionStatus.innerHTML = "<span>…</span> Thinking...";
+        status.innerHTML = "<span aria-hidden=\"true\">⏳</span> Summoning clones...";
+        suggestionStatus.innerHTML = "<span aria-hidden=\"true\">…</span> Thinking...";
 
         try {
-          const response = await fetch("https://api.openai.com/v1/responses", {
-            method: "POST",
-            signal: controller.signal,
-            headers: {
-              "Content-Type": "application/json",
-              "OpenAI-Beta": "responses=v1",
-              Authorization: `Bearer ${key}`,
-            },
-            body: JSON.stringify({
-              model: "gpt-4.1-mini",
-              input: [
-                {
-                  role: "system",
-                  content: [
-                    {
-                      type: "text",
-                      text:
-                        "You are copycat.so, an elite social copy remixer. Provide exactly three numbered variations, each punchy and under 280 characters unless a longer length is requested. Keep formatting clean for direct copying.",
-                    },
-                  ],
-                },
-                {
-                  role: "user",
-                  content: [
-                    {
-                      type: "text",
-                      text: `Original text:\n${text}\n\nDesired vibe:\n${vibeDescription.join("\n")}\n\nReturn three distinct options.`,
-                    },
-                  ],
-                },
-              ],
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
+          const response = await fetch(
+            "https://api.openai.com/v1/chat/completions",
+            {
+              method: "POST",
+              signal: controller.signal,
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${key}`,
+              },
+              body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                  {
+                    role: "system",
+                    content:
+                      "You are copycat.so, an elite social copy remixer. Provide exactly three numbered variations, each punchy and under 280 characters unless a longer length is requested. Keep formatting clean for direct copying.",
+                  },
+                  {
+                    role: "user",
+                    content: `Original text:\n${text}\n\nDesired vibe:\n${vibeDescription.join(
+                      "\n"
+                    )}\n\nReturn three distinct options.`,
+                  },
+                ],
+              }),
+            }
+          );
 
           const data = await response.json();
+
+          if (!response.ok) {
+            const message = data?.error?.message || `HTTP ${response.status}`;
+            throw new Error(message);
+          }
           if (callId !== state.lastCallId) {
             return; // stale response
           }
 
-          const output = data.output || data.responses || [];
-          let textOutput = [];
-          if (typeof data.output_text === "string") {
-            textOutput = data.output_text.split(/\n(?:\d+\.|-)/).map((s) => s.trim()).filter(Boolean);
-          } else if (Array.isArray(output)) {
-            textOutput = output
-              .flatMap((item) => item.content || [])
-              .map((chunk) => chunk.text)
-              .join("\n")
-              .split(/\n\s*\d+\.\s*/)
-              .map((line) => line.trim())
-              .filter(Boolean);
-          }
+          const content =
+            data?.choices?.map((choice) => choice?.message?.content || "").join("\n") || "";
 
-          if (!textOutput.length && data.content) {
-            textOutput = data.content
-              .map((item) => item.text)
-              .join("\n")
-              .split(/\n\s*\d+\.\s*/)
-              .map((line) => line.trim())
-              .filter(Boolean);
-          }
+          const textOutput = content
+            .split(/\n\s*\d+\.\s*/)
+            .map((line) => line.replace(/^\d+\.\s*/, "").trim())
+            .filter(Boolean)
+            .slice(0, 3);
 
           if (!textOutput.length) {
-            textOutput = ["Could not parse AI response. Check the console for details."];
-            console.error("Unexpected response shape", data);
+            textOutput.push(
+              content.trim() || "Could not parse AI response. Check the console for details."
+            );
+            if (!content.trim()) {
+              console.error("Unexpected response shape", data);
+            }
           }
 
-          renderSuggestions(textOutput.slice(0, 3));
-          status.innerHTML = "<span>✅</span> Clone complete.";
+          renderSuggestions(textOutput);
+          status.innerHTML = "<span aria-hidden=\"true\">✅</span> Clone complete.";
         } catch (error) {
           if (error.name === "AbortError") {
             return;
           }
           console.error(error);
-          suggestionStatus.innerHTML = "<span>!</span> Oops — something glitched.";
-          status.innerHTML = "<span>⚠️</span> Check the console & API key.";
+          const message =
+            error?.message?.toLowerCase().includes("api key") ||
+            error?.message?.toLowerCase().includes("unauthorized")
+              ? "Double-check your API key and try again."
+              : "OpenAI didn't like that request. See the console for details.";
+          suggestionStatus.innerHTML = "<span aria-hidden=\"true\">!</span> " + message;
+          status.innerHTML = `<span aria-hidden="true">⚠️</span> ${message}`;
           fakeSuggestions(text);
         }
       }
@@ -772,7 +776,7 @@
         const text = sourceText.value.trim();
         if (!text) {
           state.lastText = "";
-          status.innerHTML = "<span>★</span> Waiting for your paste.";
+          status.innerHTML = "<span aria-hidden=\"true\">★</span> Waiting for your paste.";
           renderSuggestions([]);
           return;
         }
@@ -790,7 +794,7 @@
         }
 
         state.debounce = setTimeout(() => callOpenAI(text, callId), 500);
-        status.innerHTML = "<span>🐾</span> Prepping the clones...";
+        status.innerHTML = "<span aria-hidden=\"true\">🐾</span> Prepping the clones...";
       }
 
       [lengthSlider, toneSlider, riskSlider].forEach((slider) =>
