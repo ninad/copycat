@@ -661,19 +661,7 @@
         ]);
       }
 
-      async function callOpenAI(text, callId) {
-        const key = getApiKey();
-        if (!key) {
-          fakeSuggestions(text);
-          return;
-        }
-
-        if (state.controller) {
-          state.controller.abort();
-        }
-        const controller = new AbortController();
-        state.controller = controller;
-
+      function buildVibeDescription() {
         const vibeDescription = [
           `Length: ${sliderMetaText(state.length, sliderLabels.length)} (${Math.round(
             state.length * 100
@@ -694,88 +682,206 @@
           );
         }
 
+        return vibeDescription;
+      }
+
+      function extractSuggestions(data) {
+        if (!data) return [];
+
+        if (typeof data.output_text === "string") {
+          return data.output_text
+            .split(/\n(?:\d+\.|-)/)
+            .map((s) => s.trim())
+            .filter(Boolean);
+        }
+
+        const output = data.output || data.responses;
+        if (Array.isArray(output)) {
+          const text = output
+            .flatMap((item) => item.content || [])
+            .map((chunk) => chunk.text || "")
+            .join("\n");
+          if (text.trim()) {
+            return text
+              .split(/\n\s*\d+\.\s*/)
+              .map((line) => line.trim())
+              .filter(Boolean);
+          }
+        }
+
+        if (Array.isArray(data.content)) {
+          const text = data.content.map((item) => item.text || "").join("\n");
+          if (text.trim()) {
+            return text
+              .split(/\n\s*\d+\.\s*/)
+              .map((line) => line.trim())
+              .filter(Boolean);
+          }
+        }
+
+        if (Array.isArray(data.choices)) {
+          const text = data.choices
+            .map((choice) => choice.message?.content || choice.text || "")
+            .join("\n");
+          if (text.trim()) {
+            return text
+              .split(/\n\s*\d+\.\s*/)
+              .map((line) => line.trim())
+              .filter(Boolean);
+          }
+        }
+
+        return [];
+      }
+
+      function shouldFallbackToChat(error) {
+        if (!error || typeof error !== "object") return false;
+        const status = error.status;
+        if (!status) return false;
+        if (status === 404 || status === 501) return true;
+        if (status === 400 || status === 403) {
+          const message =
+            (error.payload &&
+              (error.payload.error?.message || error.payload.error?.code || "")) ||
+            "";
+          return /responses/i.test(message) || /beta/i.test(message);
+        }
+        return false;
+      }
+
+      async function requestOpenAI({
+        url,
+        key,
+        controller,
+        body,
+        headers = {},
+      }) {
+        const response = await fetch(url, {
+          method: "POST",
+          signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${key}`,
+            ...headers,
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+          const error = new Error(`HTTP ${response.status}`);
+          error.status = response.status;
+          try {
+            error.payload = await response.json();
+          } catch (_) {
+            // ignore JSON parsing errors so we still reject with HTTP status
+          }
+          throw error;
+        }
+
+        return response.json();
+      }
+
+      async function callOpenAI(text, callId) {
+        const key = getApiKey();
+        if (!key) {
+          fakeSuggestions(text);
+          return;
+        }
+
+        if (state.controller) {
+          state.controller.abort();
+        }
+        const controller = new AbortController();
+        state.controller = controller;
+
+        const vibeDescription = buildVibeDescription();
+
         status.innerHTML = "<span aria-hidden=\"true\">⏳</span> Summoning clones...";
         suggestionStatus.innerHTML = "<span aria-hidden=\"true\">…</span> Thinking...";
 
-        try {
-          const response = await fetch("https://api.openai.com/v1/responses", {
-            method: "POST",
-            signal: controller.signal,
-            headers: {
-              "Content-Type": "application/json",
-              "OpenAI-Beta": "responses=v1",
-              Authorization: `Bearer ${key}`,
-            },
-            body: JSON.stringify({
-              model: "gpt-4.1-mini",
-              input: [
+        const responsesPayload = {
+          model: "gpt-4.1-mini",
+          input: [
+            {
+              role: "system",
+              content: [
                 {
-                  role: "system",
-                  content: [
-                    {
-                      type: "text",
-                      text:
-                        "You are copycat.so, an elite social copy remixer. Provide exactly three numbered variations, each punchy and under 280 characters unless a longer length is requested. Keep formatting clean for direct copying.",
-                    },
-                  ],
-                },
-                {
-                  role: "user",
-                  content: [
-                    {
-                      type: "text",
-                      text: `Original text:\n${text}\n\nDesired vibe:\n${vibeDescription.join("\n")}\n\nReturn three distinct options.`,
-                    },
-                  ],
+                  type: "text",
+                  text:
+                    "You are copycat.so, an elite social copy remixer. Provide exactly three numbered variations, each punchy and under 280 characters unless a longer length is requested. Keep formatting clean for direct copying.",
                 },
               ],
-            }),
-          });
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: `Original text:\n${text}\n\nDesired vibe:\n${vibeDescription.join("\n")}\n\nReturn three distinct options.`,
+                },
+              ],
+            },
+          ],
+        };
 
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+        const chatPayload = {
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are copycat.so, an elite social copy remixer. Provide exactly three numbered variations, each punchy and under 280 characters unless a longer length is requested. Keep formatting clean for direct copying.",
+            },
+            {
+              role: "user",
+              content: `Original text:\n${text}\n\nDesired vibe:\n${vibeDescription.join("\n")}\n\nReturn three distinct options.`,
+            },
+          ],
+        };
+
+        try {
+          let data;
+          try {
+            data = await requestOpenAI({
+              url: "https://api.openai.com/v1/responses",
+              key,
+              controller,
+              body: responsesPayload,
+              headers: { "OpenAI-Beta": "responses=v1" },
+            });
+          } catch (error) {
+            if (!shouldFallbackToChat(error)) {
+              throw error;
+            }
+            data = await requestOpenAI({
+              url: "https://api.openai.com/v1/chat/completions",
+              key,
+              controller,
+              body: chatPayload,
+            });
           }
 
-          const data = await response.json();
           if (callId !== state.lastCallId) {
             return; // stale response
           }
 
-          const output = data.output || data.responses || [];
-          let textOutput = [];
-          if (typeof data.output_text === "string") {
-            textOutput = data.output_text.split(/\n(?:\d+\.|-)/).map((s) => s.trim()).filter(Boolean);
-          } else if (Array.isArray(output)) {
-            textOutput = output
-              .flatMap((item) => item.content || [])
-              .map((chunk) => chunk.text)
-              .join("\n")
-              .split(/\n\s*\d+\.\s*/)
-              .map((line) => line.trim())
-              .filter(Boolean);
-          }
+          const suggestions = extractSuggestions(data);
 
-          if (!textOutput.length && data.content) {
-            textOutput = data.content
-              .map((item) => item.text)
-              .join("\n")
-              .split(/\n\s*\d+\.\s*/)
-              .map((line) => line.trim())
-              .filter(Boolean);
-          }
-
-          if (!textOutput.length) {
-            textOutput = ["Could not parse AI response. Check the console for details."];
+          if (!suggestions.length) {
             console.error("Unexpected response shape", data);
+            renderSuggestions([
+              "Could not parse AI response. Check the console for details.",
+            ]);
+          } else {
+            renderSuggestions(suggestions.slice(0, 3));
           }
 
-          renderSuggestions(textOutput.slice(0, 3));
           status.innerHTML = "<span aria-hidden=\"true\">✅</span> Clone complete.";
         } catch (error) {
           if (error.name === "AbortError") {
             return;
           }
-          console.error(error);
+          console.error(error.payload || error);
           suggestionStatus.innerHTML = "<span aria-hidden=\"true\">!</span> Oops — something glitched.";
           status.innerHTML = "<span aria-hidden=\"true\">⚠️</span> Check the console & API key.";
           fakeSuggestions(text);
