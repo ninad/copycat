@@ -689,6 +689,7 @@
             signal: controller.signal,
             headers: {
               "Content-Type": "application/json",
+              "OpenAI-Beta": "responses=v1",
               Authorization: `Bearer ${key}`,
             },
             body: JSON.stringify({
