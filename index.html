@@ -7,30 +7,28 @@
     <style>
       :root {
         color-scheme: light dark;
-        --background: #f5f5f7;
-        --surface: rgba(255, 255, 255, 0.82);
-        --surface-solid: #ffffff;
-        --border: rgba(0, 0, 0, 0.08);
-        --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
-        --text: #1d1d1f;
-        --text-muted: #6e6e73;
-        --accent: #0071e3;
-        --accent-soft: rgba(0, 113, 227, 0.16);
-        --radius-lg: 28px;
-        --radius-md: 22px;
+        --bg: #f7f7f8;
+        --surface: #ffffff;
+        --border: #e3e3e8;
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --accent-soft: rgba(37, 99, 235, 0.14);
+        --shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+        --radius-lg: 20px;
+        --radius-md: 16px;
       }
 
       @media (prefers-color-scheme: dark) {
         :root {
-          --background: #000000;
-          --surface: rgba(28, 28, 30, 0.78);
-          --surface-solid: #1c1c1e;
-          --border: rgba(255, 255, 255, 0.08);
-          --shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
-          --text: #f5f5f7;
-          --text-muted: rgba(235, 235, 245, 0.6);
-          --accent: #0a84ff;
-          --accent-soft: rgba(10, 132, 255, 0.24);
+          --bg: #0f1115;
+          --surface: #161920;
+          --border: rgba(148, 163, 184, 0.18);
+          --text: #f8fafc;
+          --muted: rgba(226, 232, 240, 0.7);
+          --accent: #60a5fa;
+          --accent-soft: rgba(96, 165, 250, 0.18);
+          --shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
         }
       }
 
@@ -44,10 +42,9 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding: clamp(3rem, 6vw, 5rem) 1.5rem clamp(4rem, 8vw, 6rem);
-        font-family: "SF Pro Text", "SF Pro Display", -apple-system, system-ui,
-          sans-serif;
-        background: var(--background);
+        padding: clamp(3rem, 6vw, 4.5rem) 1.5rem clamp(4rem, 8vw, 6rem);
+        font-family: "Inter", "SF Pro Text", -apple-system, system-ui, sans-serif;
+        background: var(--bg);
         color: var(--text);
       }
 
@@ -55,103 +52,179 @@
         width: min(960px, 100%);
         display: flex;
         flex-direction: column;
-        gap: clamp(1.75rem, 4vw, 2.5rem);
+        gap: clamp(1.8rem, 4vw, 2.5rem);
       }
 
-      header {
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: clamp(1rem, 3vw, 2.5rem);
+      }
+
+      .brand {
+        display: flex;
+        align-items: flex-start;
+        gap: clamp(0.9rem, 2vw, 1.4rem);
+      }
+
+      .logo-slot {
+        width: clamp(48px, 5vw, 60px);
+        height: clamp(48px, 5vw, 60px);
+        border-radius: 16px;
+        border: 1px dashed var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .brand-copy {
         display: flex;
         flex-direction: column;
-        gap: clamp(1rem, 2.8vw, 1.75rem);
-        padding: clamp(2rem, 4vw, 2.9rem);
-        background: var(--surface);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        backdrop-filter: blur(28px);
-        box-shadow: var(--shadow);
+        gap: 0.45rem;
       }
 
-      .logo {
-        display: inline-flex;
-        align-items: baseline;
-        gap: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.18em;
+      .brand-name {
+        margin: 0;
+        font-size: clamp(1.15rem, 2vw, 1.35rem);
         font-weight: 600;
-        color: var(--text-muted);
-        font-size: 0.9rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
       }
 
-      .logo .wordmark {
-        padding: 0.45rem 1.05rem;
-        border-radius: 999px;
-        background: var(--surface-solid);
+      .tagline {
+        margin: 0;
+        max-width: 38ch;
+        font-size: clamp(0.95rem, 2vw, 1.05rem);
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .api-menu-wrap {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+
+      .menu-button {
         border: 1px solid var(--border);
-        color: var(--text);
-        letter-spacing: 0.16em;
-      }
-
-      .logo .tagline {
-        opacity: 0.75;
-      }
-
-      header h1 {
-        margin: 0;
-        font-size: clamp(2.4rem, 5vw, 3.4rem);
-        font-weight: 700;
-        letter-spacing: -0.03em;
-      }
-
-      header p {
-        margin: 0;
-        max-width: 56ch;
-        font-size: clamp(1.05rem, 2.2vw, 1.25rem);
-        line-height: 1.55;
-        color: var(--text-muted);
-      }
-
-      .panel {
+        border-radius: 999px;
         background: var(--surface);
+        padding: 0.55rem 1rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+      }
+
+      .menu-button:focus-visible,
+      .menu-button:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-soft);
+        outline: none;
+      }
+
+      .menu-panel {
+        position: absolute;
+        top: calc(100% + 0.75rem);
+        right: 0;
+        width: clamp(260px, 40vw, 340px);
+        padding: 1.25rem;
         border-radius: var(--radius-md);
         border: 1px solid var(--border);
-        padding: clamp(1.4rem, 3vw, 2rem);
-        display: flex;
-        flex-direction: column;
-        gap: 1.2rem;
-        backdrop-filter: blur(28px);
+        background: var(--surface);
         box-shadow: var(--shadow);
-      }
-
-      .grid {
         display: grid;
-        gap: clamp(1.4rem, 3vw, 2rem);
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        align-items: start;
+        gap: 0.9rem;
+        z-index: 10;
       }
 
       label {
-        display: block;
         font-weight: 600;
         letter-spacing: 0.01em;
+      }
+
+      .api-key {
+        display: flex;
+        gap: 0.65rem;
+        align-items: center;
+      }
+
+      .api-key input {
+        flex: 1;
+        padding: 0.7rem 0.9rem;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font: inherit;
+        color: var(--text);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+      }
+
+      .api-key input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-soft);
+      }
+
+      .small-print {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .workspace {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding: clamp(1.5rem, 4vw, 2rem);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.5rem, 3vw, 2.25rem);
+      }
+
+      .input-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(1.25rem, 3vw, 2.25rem);
+        align-items: flex-start;
+      }
+
+      .field {
+        flex: 1 1 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
       }
 
       textarea {
         width: 100%;
         min-height: 220px;
         resize: vertical;
-        padding: 1rem 1.15rem;
-        border-radius: 20px;
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        padding: 1rem 1.1rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
         font: inherit;
         line-height: 1.6;
         color: var(--text);
-        background: var(--surface-solid);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-        transition: border-color 160ms ease, box-shadow 160ms ease;
+        background: var(--surface);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
       }
 
       textarea::placeholder {
-        color: var(--text-muted);
-        opacity: 0.7;
+        color: var(--muted);
+        opacity: 0.75;
       }
 
       textarea:focus {
@@ -161,78 +234,83 @@
       }
 
       .controls {
+        flex: 1 1 260px;
         display: grid;
         gap: 1.1rem;
       }
 
       .slider-group {
         display: grid;
-        gap: 0.55rem;
+        gap: 0.5rem;
       }
 
       .slider-meta {
         display: flex;
         justify-content: space-between;
         font-size: 0.85rem;
-        color: var(--text-muted);
+        color: var(--muted);
       }
 
       input[type="range"] {
         -webkit-appearance: none;
         height: 6px;
         border-radius: 999px;
-        background: linear-gradient(90deg, var(--accent), rgba(0, 113, 227, 0.25));
+        background: linear-gradient(90deg, var(--accent), rgba(37, 99, 235, 0.3));
       }
 
       input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
-        height: 22px;
-        width: 22px;
+        height: 18px;
+        width: 18px;
         border-radius: 50%;
         background: var(--accent);
         border: none;
-        box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
         cursor: pointer;
       }
 
       input[type="range"]::-moz-range-thumb {
-        height: 22px;
-        width: 22px;
+        height: 18px;
+        width: 18px;
         border-radius: 50%;
         background: var(--accent);
         border: none;
-        box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
         cursor: pointer;
+      }
+
+      .extras-label {
+        font-weight: 600;
+        margin-bottom: 0.35rem;
       }
 
       .toggles {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem;
+        gap: 0.6rem;
       }
 
       .toggle {
         display: inline-flex;
         align-items: center;
-        gap: 0.45rem;
-        padding: 0.55rem 1rem;
+        gap: 0.4rem;
+        padding: 0.45rem 0.9rem;
         border-radius: 999px;
         border: 1px solid var(--border);
-        background: var(--surface-solid);
+        background: var(--surface);
         color: var(--text);
-        font-weight: 500;
-        letter-spacing: 0.01em;
+        font-size: 0.9rem;
         cursor: pointer;
-        transition: background 160ms ease, border-color 160ms ease,
-          color 160ms ease, box-shadow 160ms ease;
+        transition: border-color 150ms ease, box-shadow 150ms ease,
+          color 150ms ease;
       }
 
       .toggle .dot {
-        width: 12px;
-        height: 12px;
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
-        background: rgba(110, 110, 115, 0.4);
-        transition: background 160ms ease;
+        background: rgba(107, 114, 128, 0.5);
+        transition: background 150ms ease;
       }
 
       .toggle.active {
@@ -246,10 +324,11 @@
       }
 
       .status {
-        font-size: 0.92rem;
-        color: var(--text-muted);
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--muted);
         display: inline-flex;
-        gap: 0.55rem;
+        gap: 0.45rem;
         align-items: center;
       }
 
@@ -257,98 +336,59 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
         background: var(--accent-soft);
         color: var(--accent);
         font-size: 0.7rem;
       }
 
-      .api-key {
-        display: flex;
-        gap: 0.85rem;
-        align-items: center;
-      }
-
-      .api-key input {
-        flex: 1;
-        padding: 0.75rem 1rem;
-        border-radius: 16px;
-        border: 1px solid var(--border);
-        background: var(--surface-solid);
-        font: inherit;
-        transition: border-color 160ms ease, box-shadow 160ms ease;
-      }
-
-      .api-key input:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 4px var(--accent-soft);
-      }
-
-      .small-print {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        margin-top: -0.4rem;
-      }
-
-      .suggestions {
+      .results {
         display: grid;
         gap: 1rem;
       }
 
-      .suggestion-card {
-        position: relative;
-        padding: 1.3rem 1.4rem 1.4rem;
-        background: var(--surface-solid);
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        transition: transform 160ms ease, box-shadow 160ms ease,
-          border-color 160ms ease;
+      .suggestions {
+        display: grid;
+        gap: 0.9rem;
       }
 
-      .suggestion-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(0, 113, 227, 0.25);
-        box-shadow: 0 14px 40px rgba(15, 23, 42, 0.16);
+      .suggestion-card {
+        position: relative;
+        padding: 1.1rem 1.1rem 1.2rem;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
       }
 
       .suggestion-card button {
         position: absolute;
-        top: 14px;
-        right: 14px;
+        top: 12px;
+        right: 12px;
         border: none;
-        background: var(--accent);
-        color: #ffffff;
         border-radius: 999px;
-        padding: 0.4rem 0.8rem;
+        background: var(--accent);
+        color: #fff;
         font-size: 0.75rem;
         font-weight: 600;
         letter-spacing: 0.05em;
-        text-transform: uppercase;
+        padding: 0.35rem 0.75rem;
         cursor: pointer;
-        opacity: 0;
-        transform: translateY(-6px);
-        transition: opacity 160ms ease, transform 160ms ease;
-      }
-
-      .suggestion-card:hover button {
-        opacity: 1;
-        transform: translateY(0);
       }
 
       .suggestion-card p {
         margin: 0;
-        font-size: 1rem;
+        font-size: 0.95rem;
         line-height: 1.55;
         color: var(--text);
+        max-width: 60ch;
       }
 
       footer {
         text-align: center;
-        color: var(--text-muted);
+        color: var(--muted);
         font-size: 0.85rem;
       }
 
@@ -361,70 +401,90 @@
           padding: 2.5rem 1.1rem 3.5rem;
         }
 
-        .panel,
-        header {
-          border-radius: 22px;
+        .top-bar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 1.5rem;
+        }
+
+        .api-menu-wrap {
+          align-items: flex-start;
+        }
+
+        .menu-panel {
+          position: static;
+          width: 100%;
         }
 
         .api-key {
           flex-direction: column;
           align-items: stretch;
         }
-
-        .suggestion-card button {
-          opacity: 1;
-          transform: none;
-        }
       }
     </style>
   </head>
   <body>
     <main>
-      <header>
-        <div class="logo">
-          <span class="wordmark">copycat.so</span>
+      <header class="top-bar">
+        <div class="brand">
+          <div class="logo-slot" aria-hidden="true">logo</div>
+          <div class="brand-copy">
+            <p class="brand-name">copycat.so</p>
+            <p class="tagline">
+              Instant crisp copy. Paste your words and shape the tone, length,
+              and energy in seconds.
+            </p>
+          </div>
         </div>
-        <h1>Instant Crisp Copy</h1>
-        <p>
-          Paste your text and let copy cat shape the tone, length, and energy.
-        </p>
+        <div class="api-menu-wrap">
+          <button
+            id="apiMenuToggle"
+            class="menu-button"
+            type="button"
+            aria-expanded="false"
+            aria-controls="apiMenu"
+          >
+            API key
+          </button>
+          <div id="apiMenu" class="menu-panel" hidden>
+            <label for="apiKey">OpenAI API key</label>
+            <div class="api-key">
+              <input
+                type="password"
+                id="apiKey"
+                placeholder="sk-..."
+                autocomplete="off"
+              />
+              <button id="saveKey" type="button" class="toggle">
+                <span class="dot"></span>
+                Remember on this device
+              </button>
+            </div>
+            <p class="small-print">
+              Your key is stored locally in your browser only. Don't have one
+              yet? Grab an API key from
+              <a href="https://platform.openai.com/" target="_blank" rel="noopener"
+                >OpenAI</a
+              >.
+            </p>
+          </div>
+        </div>
       </header>
 
-      <section class="panel">
-        <label for="apiKey">OpenAI API key</label>
-        <div class="api-key">
-          <input
-            type="password"
-            id="apiKey"
-            placeholder="sk-..."
-            autocomplete="off"
-          />
-          <button id="saveKey" type="button" class="toggle">
-            <span class="dot"></span>
-            Remember on this device
-          </button>
-        </div>
-        <p class="small-print">
-          Your key is stored locally in your browser only. Don't have one yet?
-          Grab an API key from <a href="https://platform.openai.com/" target="_blank" rel="noopener">OpenAI</a>.
-        </p>
-      </section>
-
-      <section class="grid">
-        <section class="panel">
-          <label for="sourceText">Source text</label>
-          <textarea
-            id="sourceText"
-            placeholder="Paste something you love, and copycat.so will craft three fresh takes..."
-          ></textarea>
-          <p class="status" id="status">
-            <span aria-hidden="true">●</span>
-            Waiting for your paste.
-          </p>
-        </section>
-
-        <section class="panel">
-          <div class="controls">
+      <section class="workspace">
+        <div class="input-row">
+          <div class="field">
+            <label for="sourceText">Source text</label>
+            <textarea
+              id="sourceText"
+              placeholder="Paste something you love, and copycat.so will craft three fresh takes..."
+            ></textarea>
+            <p class="status" id="status">
+              <span aria-hidden="true">●</span>
+              Waiting for your paste.
+            </p>
+          </div>
+          <aside class="controls">
             <div class="slider-group">
               <label for="lengthSlider">Length</label>
               <input type="range" id="lengthSlider" min="0" max="100" value="50" />
@@ -456,21 +516,19 @@
             </div>
 
             <div>
-              <span style="font-weight: 600; display: block; margin-bottom: 0.5rem"
-                >Extras</span
-              >
+              <span class="extras-label">Extras</span>
               <div class="toggles" id="extraToggles"></div>
             </div>
-          </div>
-        </section>
-      </section>
-
-      <section class="panel">
-        <div class="status" id="suggestionStatus">
-          <span aria-hidden="true">●</span>
-          No clones yet.
+          </aside>
         </div>
-        <div class="suggestions" id="suggestions"></div>
+
+        <div class="results">
+          <p class="status" id="suggestionStatus">
+            <span aria-hidden="true">●</span>
+            No clones yet.
+          </p>
+          <div class="suggestions" id="suggestions"></div>
+        </div>
       </section>
 
       <footer>
@@ -505,6 +563,8 @@
 
       const apiKeyInput = document.getElementById("apiKey");
       const saveKeyButton = document.getElementById("saveKey");
+      const apiMenuToggle = document.getElementById("apiMenuToggle");
+      const apiMenu = document.getElementById("apiMenu");
       const sourceText = document.getElementById("sourceText");
       const status = document.getElementById("status");
       const suggestionStatus = document.getElementById("suggestionStatus");
@@ -930,6 +990,47 @@
       });
 
       saveKeyButton.addEventListener("click", toggleKeyStorage);
+
+      if (apiMenuToggle && apiMenu) {
+        function closeApiMenu() {
+          apiMenuToggle.setAttribute("aria-expanded", "false");
+          apiMenu.hidden = true;
+        }
+
+        apiMenuToggle.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const expanded = apiMenuToggle.getAttribute("aria-expanded") === "true";
+          if (expanded) {
+            closeApiMenu();
+          } else {
+            apiMenuToggle.setAttribute("aria-expanded", "true");
+            apiMenu.hidden = false;
+            if (apiKeyInput) {
+              setTimeout(() => apiKeyInput.focus(), 50);
+            }
+          }
+        });
+
+        apiMenu.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+
+        document.addEventListener("click", (event) => {
+          if (apiMenu.hidden) {
+            return;
+          }
+          if (event.target === apiMenuToggle || apiMenu.contains(event.target)) {
+            return;
+          }
+          closeApiMenu();
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && apiMenuToggle.getAttribute("aria-expanded") === "true") {
+            closeApiMenu();
+          }
+        });
+      }
 
       populateToggles();
       updateSliderState();
