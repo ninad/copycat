@@ -758,7 +758,7 @@
           signal: controller.signal,
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${key}`,
+            "x-openai-key": key,
             ...headers,
           },
           body: JSON.stringify(body),
@@ -839,12 +839,11 @@
         try {
           let data;
           try {
-            data = await requestOpenAI({
-              url: "https://api.openai.com/v1/responses",
+              data = await requestOpenAI({
+              url: "https://wandering-heart-b66a.ninad-085.workers.dev",
               key,
               controller,
-              body: responsesPayload,
-              headers: { "OpenAI-Beta": "responses=v1" },
+              body: chatPayload,
             });
           } catch (error) {
             if (!shouldFallbackToChat(error)) {
