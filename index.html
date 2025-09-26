@@ -390,26 +390,6 @@
         </p>
       </header>
 
-      <section class="panel">
-        <label for="apiKey">OpenAI API key</label>
-        <div class="api-key">
-          <input
-            type="password"
-            id="apiKey"
-            placeholder="sk-..."
-            autocomplete="off"
-          />
-          <button id="saveKey" type="button" class="toggle">
-            <span class="dot"></span>
-            Remember on this device
-          </button>
-        </div>
-        <p class="small-print">
-          Your key is stored locally in your browser only. Don't have one yet?
-          Grab an API key from <a href="https://platform.openai.com/" target="_blank" rel="noopener">OpenAI</a>.
-        </p>
-      </section>
-
       <section class="grid">
         <section class="panel">
           <label for="sourceText">Source text</label>
@@ -473,6 +453,26 @@
         <div class="suggestions" id="suggestions"></div>
       </section>
 
+      <section class="panel">
+        <label for="apiKey">OpenAI API key</label>
+        <div class="api-key">
+          <input
+            type="password"
+            id="apiKey"
+            placeholder="sk-..."
+            autocomplete="off"
+          />
+          <button id="saveKey" type="button" class="toggle">
+            <span class="dot"></span>
+            Remember on this device
+          </button>
+        </div>
+        <p class="small-print">
+          Your key is stored locally in your browser only. Don't have one yet?
+          Grab an API key from <a href="https://platform.openai.com/" target="_blank" rel="noopener">OpenAI</a>.
+        </p>
+      </section>
+
       <footer>
         take a deep breath.
       </footer>
@@ -491,7 +491,7 @@
         tone: 0.5,
         risk: 0.35,
         extras: new Set(),
-        lastText: "",
+        lastSignature: "",
         lastCallId: 0,
         controller: null,
       };
@@ -635,6 +635,17 @@
           button.addEventListener("click", () => copyText(text, button));
           suggestions.appendChild(node);
         });
+      }
+
+      function buildRequestSignature(text) {
+        const extrasSignature = [...state.extras].sort().join(",");
+        return [
+          text,
+          lengthSlider.value,
+          toneSlider.value,
+          riskSlider.value,
+          extrasSignature,
+        ].join("|");
       }
 
       function fakeSuggestions(text) {
@@ -887,17 +898,19 @@
       function scheduleGeneration() {
         const text = sourceText.value.trim();
         if (!text) {
-          state.lastText = "";
+          state.lastSignature = "";
           status.innerHTML = "<span aria-hidden=\"true\">★</span> Waiting for your paste.";
           renderSuggestions([]);
           return;
         }
 
-        if (text === state.lastText) {
+        const signature = buildRequestSignature(text);
+
+        if (signature === state.lastSignature) {
           return;
         }
 
-        state.lastText = text;
+        state.lastSignature = signature;
         state.lastCallId += 1;
         const callId = state.lastCallId;
 
