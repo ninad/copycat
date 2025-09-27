@@ -177,6 +177,12 @@
         color: var(--text-muted);
       }
 
+      .slider-help {
+        margin: 0;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+
       input[type="range"] {
         -webkit-appearance: none;
         height: 6px;
@@ -402,30 +408,33 @@
               <label for="lengthSlider">Length</label>
               <input type="range" id="lengthSlider" min="0" max="100" value="50" />
               <div class="slider-meta">
-                <span>Snappy</span>
-                <span id="lengthMeta">Balanced</span>
-                <span>Storytime</span>
+                <span>Quick ping</span>
+                <span id="lengthMeta">Daily stand-up</span>
+                <span>Deep dive</span>
               </div>
+              <p class="slider-help">Shorten for a quick check-in or stretch for a full brief.</p>
             </div>
 
             <div class="slider-group">
-              <label for="toneSlider">Tone</label>
+              <label for="toneSlider">Audience</label>
               <input type="range" id="toneSlider" min="0" max="100" value="50" />
               <div class="slider-meta">
-                <span>Corporate</span>
-                <span id="toneMeta">Just right</span>
-                <span>Playful</span>
+                <span>Manager update</span>
+                <span id="toneMeta">Teammate sync</span>
+                <span>Group chat</span>
               </div>
+              <p class="slider-help">Slide left for buttoned-up work vibes, right for friendly banter.</p>
             </div>
 
             <div class="slider-group">
-              <label for="riskSlider">Spice level</label>
+              <label for="riskSlider">Boldness</label>
               <input type="range" id="riskSlider" min="0" max="100" value="35" />
               <div class="slider-meta">
-                <span>Tame</span>
-                <span id="riskMeta">Cheeky</span>
-                <span>Chaotic</span>
+                <span>Keep it safe</span>
+                <span id="riskMeta">A little flair</span>
+                <span>Make a splash</span>
               </div>
+              <p class="slider-help">Dial in how daring the copy should feel.</p>
             </div>
 
             <div>
@@ -531,9 +540,27 @@
       };
 
       const sliderLabels = {
-        length: ["Micro", "Snack", "Balanced", "Detailed", "Essay"],
-        tone: ["Poker face", "Polite", "Just right", "Friendly", "Feral"],
-        risk: ["Safe", "Spicy", "Cheeky", "Bold", "Unhinged"],
+        length: [
+          "One-liner",
+          "Quick note",
+          "Daily stand-up",
+          "Project update",
+          "All-hands recap",
+        ],
+        tone: [
+          "Exec-ready",
+          "Manager update",
+          "Teammate sync",
+          "Friend catch-up",
+          "Bestie banter",
+        ],
+        risk: [
+          "Buttoned-up",
+          "A little flair",
+          "Confident",
+          "Bold move",
+          "Big swing",
+        ],
       };
 
       const fakeBanks = [
