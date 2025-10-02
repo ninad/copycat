@@ -52,17 +52,17 @@
       }
 
       main {
-        width: min(960px, 100%);
+        width: min(1100px, 100%);
         display: flex;
         flex-direction: column;
-        gap: clamp(1.75rem, 4vw, 2.5rem);
+        gap: clamp(1.5rem, 3.5vw, 2.2rem);
       }
 
       header {
         display: flex;
         flex-direction: column;
-        gap: clamp(1rem, 2.8vw, 1.75rem);
-        padding: clamp(2rem, 4vw, 2.9rem);
+        gap: clamp(0.75rem, 2.2vw, 1.4rem);
+        padding: clamp(1.4rem, 3vw, 2.1rem);
         background: var(--surface);
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
@@ -96,7 +96,7 @@
 
       header h1 {
         margin: 0;
-        font-size: clamp(2.4rem, 5vw, 3.4rem);
+        font-size: clamp(2rem, 4vw, 2.8rem);
         font-weight: 700;
         letter-spacing: -0.03em;
       }
@@ -104,7 +104,7 @@
       header p {
         margin: 0;
         max-width: 56ch;
-        font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
         line-height: 1.55;
         color: var(--text-muted);
       }
@@ -121,7 +121,7 @@
         box-shadow: var(--shadow);
       }
 
-      .grid {
+      .workspace {
         display: grid;
         gap: clamp(1.4rem, 3vw, 2rem);
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -136,7 +136,7 @@
 
       textarea {
         width: 100%;
-        min-height: 220px;
+        min-height: 160px;
         resize: vertical;
         padding: 1rem 1.15rem;
         border-radius: 20px;
@@ -174,6 +174,12 @@
         display: flex;
         justify-content: space-between;
         font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .slider-help {
+        margin: 0;
+        font-size: 0.82rem;
         color: var(--text-muted);
       }
 
@@ -390,6 +396,69 @@
         </p>
       </header>
 
+      <section class="workspace">
+        <section class="panel composer">
+          <label for="sourceText">Source text</label>
+          <textarea
+            id="sourceText"
+            placeholder="Paste something you love, and copycat.so will craft three fresh takes..."
+          ></textarea>
+          <div class="controls">
+            <div class="slider-group">
+              <label for="lengthSlider">Length</label>
+              <input type="range" id="lengthSlider" min="0" max="100" value="50" />
+              <div class="slider-meta">
+                <span>Quick ping</span>
+                <span id="lengthMeta">Daily stand-up</span>
+                <span>Deep dive</span>
+              </div>
+              <p class="slider-help">Shorten for a quick check-in or stretch for a full brief.</p>
+            </div>
+
+            <div class="slider-group">
+              <label for="toneSlider">Audience</label>
+              <input type="range" id="toneSlider" min="0" max="100" value="50" />
+              <div class="slider-meta">
+                <span>Manager update</span>
+                <span id="toneMeta">Teammate sync</span>
+                <span>Group chat</span>
+              </div>
+              <p class="slider-help">Slide left for buttoned-up work vibes, right for friendly banter.</p>
+            </div>
+
+            <div class="slider-group">
+              <label for="riskSlider">Boldness</label>
+              <input type="range" id="riskSlider" min="0" max="100" value="35" />
+              <div class="slider-meta">
+                <span>Keep it safe</span>
+                <span id="riskMeta">A little flair</span>
+                <span>Make a splash</span>
+              </div>
+              <p class="slider-help">Dial in how daring the copy should feel.</p>
+            </div>
+
+            <div>
+              <span style="font-weight: 600; display: block; margin-bottom: 0.5rem"
+                >Extras</span
+              >
+              <div class="toggles" id="extraToggles"></div>
+            </div>
+          </div>
+          <p class="status" id="status">
+            <span aria-hidden="true">●</span>
+            Waiting for your paste.
+          </p>
+        </section>
+
+        <section class="panel responses">
+          <div class="status" id="suggestionStatus">
+            <span aria-hidden="true">●</span>
+            No clones yet.
+          </div>
+          <div class="suggestions" id="suggestions"></div>
+        </section>
+      </section>
+
       <section class="panel">
         <label for="apiKey">OpenAI API key</label>
         <div class="api-key">
@@ -410,69 +479,6 @@
         </p>
       </section>
 
-      <section class="grid">
-        <section class="panel">
-          <label for="sourceText">Source text</label>
-          <textarea
-            id="sourceText"
-            placeholder="Paste something you love, and copycat.so will craft three fresh takes..."
-          ></textarea>
-          <p class="status" id="status">
-            <span aria-hidden="true">●</span>
-            Waiting for your paste.
-          </p>
-        </section>
-
-        <section class="panel">
-          <div class="controls">
-            <div class="slider-group">
-              <label for="lengthSlider">Length</label>
-              <input type="range" id="lengthSlider" min="0" max="100" value="50" />
-              <div class="slider-meta">
-                <span>Snappy</span>
-                <span id="lengthMeta">Balanced</span>
-                <span>Storytime</span>
-              </div>
-            </div>
-
-            <div class="slider-group">
-              <label for="toneSlider">Tone</label>
-              <input type="range" id="toneSlider" min="0" max="100" value="50" />
-              <div class="slider-meta">
-                <span>Corporate</span>
-                <span id="toneMeta">Just right</span>
-                <span>Playful</span>
-              </div>
-            </div>
-
-            <div class="slider-group">
-              <label for="riskSlider">Spice level</label>
-              <input type="range" id="riskSlider" min="0" max="100" value="35" />
-              <div class="slider-meta">
-                <span>Tame</span>
-                <span id="riskMeta">Cheeky</span>
-                <span>Chaotic</span>
-              </div>
-            </div>
-
-            <div>
-              <span style="font-weight: 600; display: block; margin-bottom: 0.5rem"
-                >Extras</span
-              >
-              <div class="toggles" id="extraToggles"></div>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      <section class="panel">
-        <div class="status" id="suggestionStatus">
-          <span aria-hidden="true">●</span>
-          No clones yet.
-        </div>
-        <div class="suggestions" id="suggestions"></div>
-      </section>
-
       <footer>
         take a deep breath.
       </footer>
@@ -491,7 +497,7 @@
         tone: 0.5,
         risk: 0.35,
         extras: new Set(),
-        lastText: "",
+        lastSignature: "",
         lastCallId: 0,
         controller: null,
       };
@@ -534,9 +540,27 @@
       };
 
       const sliderLabels = {
-        length: ["Micro", "Snack", "Balanced", "Detailed", "Essay"],
-        tone: ["Poker face", "Polite", "Just right", "Friendly", "Feral"],
-        risk: ["Safe", "Spicy", "Cheeky", "Bold", "Unhinged"],
+        length: [
+          "One-liner",
+          "Quick note",
+          "Daily stand-up",
+          "Project update",
+          "All-hands recap",
+        ],
+        tone: [
+          "Exec-ready",
+          "Manager update",
+          "Teammate sync",
+          "Friend catch-up",
+          "Bestie banter",
+        ],
+        risk: [
+          "Buttoned-up",
+          "A little flair",
+          "Confident",
+          "Bold move",
+          "Big swing",
+        ],
       };
 
       const fakeBanks = [
@@ -635,6 +659,17 @@
           button.addEventListener("click", () => copyText(text, button));
           suggestions.appendChild(node);
         });
+      }
+
+      function buildRequestSignature(text) {
+        const extrasSignature = [...state.extras].sort().join(",");
+        return [
+          text,
+          lengthSlider.value,
+          toneSlider.value,
+          riskSlider.value,
+          extrasSignature,
+        ].join("|");
       }
 
       function fakeSuggestions(text) {
@@ -887,17 +922,19 @@
       function scheduleGeneration() {
         const text = sourceText.value.trim();
         if (!text) {
-          state.lastText = "";
+          state.lastSignature = "";
           status.innerHTML = "<span aria-hidden=\"true\">★</span> Waiting for your paste.";
           renderSuggestions([]);
           return;
         }
 
-        if (text === state.lastText) {
+        const signature = buildRequestSignature(text);
+
+        if (signature === state.lastSignature) {
           return;
         }
 
-        state.lastText = text;
+        state.lastSignature = signature;
         state.lastCallId += 1;
         const callId = state.lastCallId;
 
