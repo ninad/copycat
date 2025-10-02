@@ -456,7 +456,7 @@
         <section class="panel responses">
           <div class="status" id="suggestionStatus">
             <span aria-hidden="true">●</span>
-            <-- type your text to get options
+            No options generated
           </div>
           <div class="suggestions" id="suggestions"></div>
         </section>
@@ -646,7 +646,7 @@
       function renderSuggestions(list) {
         suggestions.innerHTML = "";
         if (!list.length) {
-          suggestionStatus.innerHTML = "<span aria-hidden=\"true\">…</span> No clones yet.";
+          suggestionStatus.innerHTML = "<span aria-hidden=\"true\">…</span> <-- type your text to get options";
           return;
         }
 
