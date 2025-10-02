@@ -503,6 +503,107 @@
         { id: "hashtags", label: "Hashtag" },
       ];
 
+      const jobArchetypes = [
+        {
+          id: "follow-up",
+          label: "Follow-up",
+          tag: "Follow-up",
+          guidance:
+            "Give a courteous nudge that references the last touchpoint and makes the ask or next step effortless.",
+          angles: [
+            "Gentle reminder with appreciation",
+            "Value-forward recap plus soft ask",
+            "Time-bound nudge with clear next step",
+          ],
+          match: (_text, lower) =>
+            /follow[\s-]?up|checking in|circling back|gentle reminder|just wanted to|bump this/i.test(
+              lower
+            ),
+        },
+        {
+          id: "status-update",
+          label: "Status update",
+          tag: "Status update",
+          guidance:
+            "Lead with the headline, share crisp progress, and close with blockers or next steps.",
+          angles: [
+            "Headline summary",
+            "Progress + blockers",
+            "Next steps or request",
+          ],
+          match: (text, lower, meta) =>
+            meta.hasBullets ||
+            /stand[-\s]?up|status update|progress update|sync today|as of (?:today|now)|yesterday we|blockers?/i.test(
+              lower
+            ),
+        },
+        {
+          id: "email-response",
+          label: "Email response",
+          tag: "Email",
+          guidance:
+            "Write a polished yet warm email reply with a clear greeting, body, and friendly close.",
+          angles: [
+            "Direct answer with thanks",
+            "Structured reply with bullets",
+            "Concise decision + next steps",
+          ],
+          match: (text, lower, meta) =>
+            /subject:|dear [\w\s]+,|regards,|sincerely,|best,|thanks,\s*\n|hi [\w\s]+,/i.test(
+              text
+            ) ||
+            /email|inbox|reply all/i.test(lower) ||
+            (meta.length > 280 && meta.lineCount > 4),
+        },
+        {
+          id: "announcement",
+          label: "Announcement",
+          tag: "Announcement",
+          guidance:
+            "Hook the reader fast, spotlight the benefit, and add a confident call to action.",
+          angles: [
+            "Punchy hook",
+            "Benefit spotlight",
+            "Action-oriented CTA",
+          ],
+          match: (_text, lower) =>
+            /announce|announcement|excited to|thrilled to|launch|shipping|rolling out|going live|introducing|share that/i.test(
+              lower
+            ),
+        },
+        {
+          id: "chat-reply",
+          label: "Chat reply",
+          tag: "Chat reply",
+          guidance:
+            "Sound like a natural DM or Slack response—quick, helpful, and light on formalities.",
+          angles: [
+            "Direct answer",
+            "Friendly + appreciative",
+            "Clarifying question or next step",
+          ],
+          match: (text, lower, meta) =>
+            (meta.length <= 220 && meta.lineCount <= 4 && !meta.hasBullets) ||
+            /slack|dm|text me|ping me|quick reply|chat thread/i.test(lower) ||
+            /^(?:hey|hi|yo|thanks|appreciate)\b/.test(lower),
+        },
+        {
+          id: "general",
+          label: "Message remix",
+          tag: "Message",
+          guidance:
+            "Deliver versatile, human copy that responds clearly and keeps momentum moving.",
+          angles: [
+            "Crisp and direct",
+            "Warmer with context",
+            "Option with CTA or next step",
+          ],
+          match: () => false,
+        },
+      ];
+
+      const defaultJob = jobArchetypes[jobArchetypes.length - 1];
+
       const apiKeyInput = document.getElementById("apiKey");
       const saveKeyButton = document.getElementById("saveKey");
       const sourceText = document.getElementById("sourceText");
@@ -522,6 +623,8 @@
       const suggestionTemplate = document.getElementById("suggestionTemplate");
 
       const DEFAULT_API_KEY = "";
+
+      const SYSTEM_PROMPT = `You are copycat.so, a deep user-research-driven conversational copy remixer. Infer the user's job-to-be-done (chat reply, email response, status update, announcement, follow-up, etc.) and craft empathetic, real-world-ready copy. Provide exactly three numbered variations, each distinct in angle and immediately sendable. Begin every variation with a bracketed job label (e.g., "[Chat reply]") followed by a short differentiator. Keep options under 280 characters unless the vibe requests a longer format, mirror requested extras such as emojis, CTAs, questions, or hashtags, and keep formatting clean for quick copy/paste.`;
 
       apiKeyInput.value = DEFAULT_API_KEY;
 
@@ -666,7 +769,31 @@
         ].join("|");
       }
 
-      function fakeSuggestions(text) {
+      function inferJobToBeDone(text) {
+        const trimmed = text.trim();
+        if (!trimmed) {
+          return defaultJob;
+        }
+
+        const lower = trimmed.toLowerCase();
+        const lines = trimmed.split(/\n+/);
+        const meta = {
+          lineCount: lines.length,
+          hasBullets: /(^|\n)\s*(?:[-*•]|\d+\.)/.test(trimmed),
+          length: trimmed.length,
+        };
+
+        for (const job of jobArchetypes) {
+          if (job.id === "general") continue;
+          if (job.match(trimmed, lower, meta)) {
+            return job;
+          }
+        }
+
+        return defaultJob;
+      }
+
+      function fakeSuggestions(text, job = defaultJob) {
         if (!text) {
           renderSuggestions([]);
           return;
@@ -677,13 +804,14 @@
         const extras = [...state.extras].map((id) =>
           extraOptions.find((opt) => opt.id === id)?.label.toLowerCase()
         );
-        const prompt = `${tone} • ${spice} • ${length}`;
+        const prompt = `${job.tag} • ${tone} • ${spice} • ${length}`;
         const base = `(${prompt}) ${fakeBanks[Math.floor(Math.random() * fakeBanks.length)]}`;
         const extraTail = extras.length ? ` + ${extras.join(" + ")}` : "";
+        const label = `[${job.tag}]`;
         renderSuggestions([
-          `${base}${extraTail} → ${text.slice(0, 40)}...`,
-          `${base}${extraTail} ⇢ Remix the hook and end bold.`,
-          `${base}${extraTail} ⇢ Spotlight the benefit, then wink.`,
+          `${label} ${base}${extraTail} → ${text.slice(0, 40)}...`,
+          `${label} ${base}${extraTail} ⇢ Remix the hook and end bold.`,
+          `${label} ${base}${extraTail} ⇢ Spotlight the benefit, then wink.`,
         ]);
       }
 
@@ -808,9 +936,10 @@
       }
 
       async function callOpenAI(text, callId) {
+        const job = inferJobToBeDone(text);
         const key = getApiKey();
         if (!key) {
-          fakeSuggestions(text);
+          fakeSuggestions(text, job);
           return;
         }
 
@@ -821,6 +950,36 @@
         state.controller = controller;
 
         const vibeDescription = buildVibeDescription();
+
+        const jobLines = [
+          `Primary job to be done: ${job.label}`,
+          `Job guidance: ${job.guidance}`,
+        ];
+
+        if (job.angles?.length) {
+          jobLines.push(
+            `Angles to explore across the three options:
+- ${job.angles.join("\n- ")}`
+          );
+        }
+
+        const outputLines = [
+          "Output requirements:",
+          "- Provide exactly three numbered options.",
+          `- Start each option with "[${job.tag}]" followed by a short differentiator (e.g., "[${job.tag} · Direct answer] ...").`,
+          "- Keep each option under 280 characters unless the length vibe explicitly calls for a longer format.",
+          "- Mirror any requested extras such as emojis, CTAs, questions, or hashtags.",
+          "- Ensure each option feels ready to send and, when relevant, clarifies next steps or timing.",
+        ];
+
+        const userPrompt = [
+          `Original text:\n${text}`,
+          jobLines.join("\n"),
+          `Desired vibe:\n${vibeDescription.join("\n")}`,
+          outputLines.join("\n"),
+        ]
+          .filter(Boolean)
+          .join("\n\n");
 
         status.innerHTML = "<span aria-hidden=\"true\">⏳</span> Summoning options...";
         suggestionStatus.innerHTML = "<span aria-hidden=\"true\">…</span> Thinking...";
@@ -833,8 +992,7 @@
               content: [
                 {
                   type: "text",
-                  text:
-                    "You are copycat.so, an elite social copy remixer. Provide exactly three numbered variations, each punchy and under 280 characters unless a longer length is requested. Keep formatting clean for direct copying.",
+                  text: SYSTEM_PROMPT,
                 },
               ],
             },
@@ -843,7 +1001,7 @@
               content: [
                 {
                   type: "text",
-                  text: `Original text:\n${text}\n\nDesired vibe:\n${vibeDescription.join("\n")}\n\nReturn three distinct options.`,
+                  text: userPrompt,
                 },
               ],
             },
@@ -855,12 +1013,11 @@
           messages: [
             {
               role: "system",
-              content:
-                "You are copycat.so, an elite social copy remixer. Provide exactly three numbered variations, each punchy and under 280 characters unless a longer length is requested. Keep formatting clean for direct copying.",
+              content: SYSTEM_PROMPT,
             },
             {
               role: "user",
-              content: `Original text:\n${text}\n\nDesired vibe:\n${vibeDescription.join("\n")}\n\nReturn three distinct options.`,
+              content: userPrompt,
             },
           ],
         };
@@ -909,7 +1066,7 @@
           console.error(error.payload || error);
           suggestionStatus.innerHTML = "<span aria-hidden=\"true\">!</span> Oops — something glitched.";
           status.innerHTML = "<span aria-hidden=\"true\">⚠️</span> Check the console & API key.";
-          fakeSuggestions(text);
+          fakeSuggestions(text, job);
         }
       }
 
