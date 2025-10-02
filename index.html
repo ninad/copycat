@@ -619,7 +619,7 @@
       function getApiKey() {
         const key = apiKeyInput.value.trim() || DEFAULT_API_KEY;
         if (!key) {
-          suggestionStatus.innerHTML = "<span aria-hidden=\"true\">!</span> Add your API key to generate real clones.";
+          suggestionStatus.innerHTML = "<span aria-hidden=\"true\">!</span> Add your API key to generate real options.";
         }
         return key;
       }
@@ -649,7 +649,7 @@
           return;
         }
 
-        suggestionStatus.innerHTML = `<span aria-hidden="true">✨</span> ${list.length} clones ready.`;
+        suggestionStatus.innerHTML = `<span aria-hidden="true">✨</span> ${list.length} options ready.`;
 
         list.forEach((text, index) => {
           const node = suggestionTemplate.content.cloneNode(true);
@@ -830,7 +830,7 @@
 
         const vibeDescription = buildVibeDescription();
 
-        status.innerHTML = "<span aria-hidden=\"true\">⏳</span> Summoning clones...";
+        status.innerHTML = "<span aria-hidden=\"true\">⏳</span> Summoning options...";
         suggestionStatus.innerHTML = "<span aria-hidden=\"true\">…</span> Thinking...";
 
         const responsesPayload = {
@@ -945,7 +945,7 @@
         }
 
         state.debounce = setTimeout(() => callOpenAI(text, callId), 500);
-        status.innerHTML = "<span aria-hidden=\"true\">🐾</span> Prepping the clones...";
+        status.innerHTML = "<span aria-hidden=\"true\">🐾</span> Prepping the options...";
       }
 
       [lengthSlider, toneSlider, riskSlider].forEach((slider) =>
